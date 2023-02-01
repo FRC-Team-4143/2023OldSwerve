@@ -55,43 +55,43 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
-//   SwerveModule m_frontLeft =
-//     new SwerveModule(
-//         DriveConstants.kFrontLeftDriveMotorPort,
-//         DriveConstants.kFrontLeftTurningMotorPort,
-//         DriveConstants.kFrontLeftTurnOffset,
-//         DriveConstants.kFrontLeftDriveEncoderReversed,
-//         DriveConstants.kFrontLeftTurningEncoderReversed,0);
+  SwerveModule m_frontLeft =
+    new SwerveModule(
+        DriveConstants.kFrontLeftDriveMotorPort,
+        DriveConstants.kFrontLeftTurningMotorPort,
+        DriveConstants.kFrontLeftTurnOffset,
+        DriveConstants.kFrontLeftDriveEncoderReversed,
+        DriveConstants.kFrontLeftTurningEncoderReversed);
 
-// SwerveModule m_rearLeft =
-//     new SwerveModule(
-//         DriveConstants.kRearLeftDriveMotorPort,
-//         DriveConstants.kRearLeftTurningMotorPort,
-//         DriveConstants.kRearLeftTurnOffset,
-//         DriveConstants.kRearLeftDriveEncoderReversed,
-//         DriveConstants.kRearLeftTurningEncoderReversed,0);
+SwerveModule m_rearLeft =
+    new SwerveModule(
+        DriveConstants.kRearLeftDriveMotorPort,
+        DriveConstants.kRearLeftTurningMotorPort,
+        DriveConstants.kRearLeftTurnOffset,
+        DriveConstants.kRearLeftDriveEncoderReversed,
+        DriveConstants.kRearLeftTurningEncoderReversed);
 
-// SwerveModule m_frontRight =
-//     new SwerveModule(
-//         DriveConstants.kFrontRightDriveMotorPort,
-//         DriveConstants.kFrontRightTurningMotorPort,
-//         DriveConstants.kFrontRightTurnOffset,
-//         DriveConstants.kFrontRightDriveEncoderReversed,
-//         DriveConstants.kFrontRightTurningEncoderReversed,0);
+SwerveModule m_frontRight =
+    new SwerveModule(
+        DriveConstants.kFrontRightDriveMotorPort,
+        DriveConstants.kFrontRightTurningMotorPort,
+        DriveConstants.kFrontRightTurnOffset,
+        DriveConstants.kFrontRightDriveEncoderReversed,
+        DriveConstants.kFrontRightTurningEncoderReversed);
 
-// SwerveModule m_rearRight =
-//     new SwerveModule(
-//         DriveConstants.kRearRightDriveMotorPort,
-//         DriveConstants.kRearRightTurningMotorPort,
-//         DriveConstants.kRearRightTurnOffset,
-//         DriveConstants.kRearRightDriveEncoderReversed,
-//         DriveConstants.kRearRightTurningEncoderReversed,0);
+SwerveModule m_rearRight =
+    new SwerveModule(
+        DriveConstants.kRearRightDriveMotorPort,
+        DriveConstants.kRearRightTurningMotorPort,
+        DriveConstants.kRearRightTurnOffset,
+        DriveConstants.kRearRightDriveEncoderReversed,
+        DriveConstants.kRearRightTurningEncoderReversed);
 
-//         SmartDashboard.putNumber("Front Left angle", m_frontLeft.getTurningMotorPosition());
+        SmartDashboard.putNumber("Front Left angle", m_frontLeft.getTurningMotorPosition());
         
-//         SmartDashboard.putNumber("Front Right angle", m_frontRight.getTurningMotorPosition());
-//         SmartDashboard.putNumber("Rear Left angle", m_rearLeft.getTurningMotorPosition());
-//         SmartDashboard.putNumber("Rear Right angle", m_rearRight.getTurningMotorPosition());
+        SmartDashboard.putNumber("Front Right angle", m_frontRight.getTurningMotorPosition());
+        SmartDashboard.putNumber("Rear Left angle", m_rearLeft.getTurningMotorPosition());
+        SmartDashboard.putNumber("Rear Right angle", m_rearRight.getTurningMotorPosition());
 
   }
 

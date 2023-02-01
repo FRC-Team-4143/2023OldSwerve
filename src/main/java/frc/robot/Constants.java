@@ -32,11 +32,11 @@ public final class Constants {
     public static final boolean kRearLeftTurningEncoderReversed = true;
     public static final boolean kFrontRightTurningEncoderReversed = false;
     public static final boolean kRearRightTurningEncoderReversed = true;
-
-    public static final double kFrontLeftTurnOffset = 0.63660;
-    public static final double kRearLeftTurnOffset = -1.86078;
-    public static final double kFrontRightTurnOffset = 1.96810;
-    public static final double kRearRightTurnOffset = -1.89691;
+      //Don't change these! :) or else... TY
+    public static final double kFrontLeftTurnOffset = -2.611;
+    public static final double kRearLeftTurnOffset = 1.321;
+    public static final double kFrontRightTurnOffset = 2.06;
+    public static final double kRearRightTurnOffset = -1.92;
 
     public static final boolean kFrontLeftDriveEncoderReversed = false;
     public static final boolean kRearLeftDriveEncoderReversed = true;
@@ -45,7 +45,7 @@ public final class Constants {
 
     public static final double kTrackWidth = 0.5;
     // Distance between centers of right and left wheels on robot
-    public static final double kWheelBase = 0.7;
+    public static final double kWheelBase = 0.5;
     // Distance between front and back wheels on robot
     public static final SwerveDriveKinematics kDriveKinematics =
         new SwerveDriveKinematics(
@@ -81,7 +81,7 @@ public final class Constants {
         // Assumes the encoders are on a 1:1 reduction with the module shaft.
         (2 * Math.PI) / (double) kEncoderCPR;
 
-    public static final double kPModuleTurningController = 0.40;
+    public static final double kPModuleTurningController = .8;
 
     public static final double kPModuleDriveController = 1;
   }

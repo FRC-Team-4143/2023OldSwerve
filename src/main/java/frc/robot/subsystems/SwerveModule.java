@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.math.controller.PIDController;
@@ -12,6 +13,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import frc.robot.Constants.DriveConstants;
 // import edu.wpi.first.math.util.Units;
 // import edu.wpi.first.wpilibj.AnalogEncoder;
 // import edu.wpi.first.wpilibj.Encoder;
@@ -54,10 +56,10 @@ public class SwerveModule {
       int turningMotorChannel,
       double turnOffset,
       boolean driveEncoderReversed,
-      boolean turningEncoderReversed,
-      double turningMotorOffset) {
+      boolean turningEncoderReversed) {
     m_driveMotor = new TalonSRX(driveMotorChannel);
     m_turningMotor = new TalonSRX(turningMotorChannel);
+    m_turningMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
         turningChannel = turningMotorChannel;
         turningMotorOffset = turnOffset;
    // m_driveEncoder = new Encoder(driveEncoderChannels[0], driveEncoderChannels[1]);
@@ -80,19 +82,19 @@ public class SwerveModule {
     // Set whether turning encoder should be reversed or not
     //m_turningEncoder.setReverseDirection(turningEncoderReversed);
 
-    // Limit the PID Controller's input range between 0 and 2 * pi and set the input
-    // to be continuous.
+    // Limit the PID Controller's input range between -pi and pi and set the input
+    // to be continuous.  - Math.PI + turningMotorOffset
     m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
   }
   public double getTurningMotorPosition(){
     double sensorPos = m_turningMotor.getSelectedSensorPosition()/4096.0*360.0*Math.PI/180.0 - Math.PI + turningMotorOffset;
     sensorPos *= -1.;
-    if (sensorPos < -Math.PI){
-     return sensorPos += 2*Math.PI;
-    }
-    else if (sensorPos > Math.PI) {
-      return sensorPos -= 2*Math.PI;
-    }
+     if (sensorPos < -Math.PI){
+      return sensorPos += 2*Math.PI;
+     }
+     else if (sensorPos > Math.PI) {
+       return sensorPos -= 2*Math.PI;
+     }
       return sensorPos;
 
   }
@@ -125,13 +127,16 @@ public class SwerveModule {
    */
   public void setDesiredState(SwerveModuleState desiredState) {
     SmartDashboard.putNumber(turningChannel + "Current angle", getTurningMotorPosition());
+
     // Optimize the reference state to avoid spinning further than 90 degrees
     SwerveModuleState state =
         SwerveModuleState.optimize(desiredState, new Rotation2d(getTurningMotorPosition()));
 
     // Calculate the drive output from the drive PID controller.
-    final double driveOutput =
+    double driveOutput =
         m_drivePIDController.calculate(m_driveMotor.getMotorOutputPercent(), state.speedMetersPerSecond);
+
+        driveOutput = state.speedMetersPerSecond /  DriveConstants.kMaxSpeedMetersPerSecond;
 
     // Calculate the turning motor output from the turning PID controller.
     //(turningMotorOffset - state.angle.getRadians()) calculates the delta to get the desired angle to the current angle
@@ -142,6 +147,7 @@ public class SwerveModule {
     // Calculate the turning motor output from the turning PID controller.
     m_driveMotor.set(TalonSRXControlMode.PercentOutput,driveOutput);
     m_turningMotor.set(TalonSRXControlMode.PercentOutput,turnOutput);
+    SmartDashboard.putNumber(turningChannel + "Current turning output", turnOutput);
   }
 
   /** Zeroes all the SwerveModule encoders. */
