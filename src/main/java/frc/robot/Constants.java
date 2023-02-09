@@ -32,7 +32,7 @@ public final class Constants {
     public static final boolean kRearLeftTurningEncoderReversed = true;
     public static final boolean kFrontRightTurningEncoderReversed = false;
     public static final boolean kRearRightTurningEncoderReversed = true;
-      //Don't change these! :) or else... TY
+    
     public static final double kFrontLeftTurnOffset = -2.611;
     public static final double kRearLeftTurnOffset = 1.321;
     public static final double kFrontRightTurnOffset = 2.06;
