@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.math.controller.PIDController;
@@ -18,6 +19,7 @@ import frc.robot.Constants.DriveConstants;
 // import edu.wpi.first.wpilibj.AnalogEncoder;
 // import edu.wpi.first.wpilibj.Encoder;
 import frc.robot.Constants.ModuleConstants;
+import edu.wpi.first.wpilibj.Preferences;
 //import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -27,6 +29,7 @@ public class SwerveModule {
   private final TalonSRX m_turningMotor;
   private int turningChannel;
   private double turningMotorOffset;
+  
 
   private final PIDController m_drivePIDController =
       new PIDController(ModuleConstants.kPModuleDriveController, 0, 0);
@@ -59,9 +62,12 @@ public class SwerveModule {
       boolean turningEncoderReversed) {
     m_driveMotor = new TalonSRX(driveMotorChannel);
     m_turningMotor = new TalonSRX(turningMotorChannel);
+    m_driveMotor.setNeutralMode(NeutralMode.Brake);
+    m_turningMotor.setNeutralMode(NeutralMode.Brake);
     m_turningMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
         turningChannel = turningMotorChannel;
-        turningMotorOffset = turnOffset;
+        turningMotorOffset = Preferences.getDouble("Module"+turningChannel, turnOffset);
+        
    // m_driveEncoder = new Encoder(driveEncoderChannels[0], driveEncoderChannels[1]);
 
    // m_turningEncoder = new Encoder(turningEncoderChannels[0], turningEncoderChannels[1]);
@@ -87,7 +93,7 @@ public class SwerveModule {
     m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
   }
   public double getTurningMotorPosition(){
-    double sensorPos = m_turningMotor.getSelectedSensorPosition()/4096.0*360.0*Math.PI/180.0 - Math.PI + turningMotorOffset;
+    double sensorPos = m_turningMotor.getSelectedSensorPosition()/4096.0*360.0*Math.PI/180.0 - Math.PI - turningMotorOffset;
     sensorPos *= -1.;
      if (sensorPos < -Math.PI){
       return sensorPos += 2*Math.PI;
@@ -116,8 +122,10 @@ public class SwerveModule {
    * @return The current position of the module.
    */
   public SwerveModulePosition getPosition() {
+    double position = getTurningMotorPosition();
+    SmartDashboard.putNumber(turningChannel + " Motor ", position);
     return new SwerveModulePosition(
-        m_driveMotor.getMotorOutputPercent() * 10, new Rotation2d(getTurningMotorPosition()));
+        m_driveMotor.getMotorOutputPercent() * 10, new Rotation2d(position));
   }
 
   /**
@@ -125,6 +133,12 @@ public class SwerveModule {
    *
    * @param desiredState Desired state with speed and angle.
    */
+
+   public void setWheelOffsets() {
+      turningMotorOffset = m_turningMotor.getSelectedSensorPosition()/4096.0*360.0*Math.PI/180.0 - Math.PI;
+      Preferences.setDouble("Module"+turningChannel, turningMotorOffset);
+
+   }
   public void setDesiredState(SwerveModuleState desiredState) {
     SmartDashboard.putNumber(turningChannel + "Current angle", getTurningMotorPosition());
 
@@ -140,19 +154,18 @@ public class SwerveModule {
 
     // Calculate the turning motor output from the turning PID controller.
     //(turningMotorOffset - state.angle.getRadians()) calculates the delta to get the desired angle to the current angle
-    final double turnOutput =
+    double turnOutput =
         m_turningPIDController.calculate(getTurningMotorPosition(), state.angle.getRadians());
-        System.out.println(turningChannel + " current angle "+ getTurningMotorPosition());
-        System.out.println(turningChannel + " desired angle " + state.angle.getRadians());
+        // System.out.println(turningChannel + " current angle "+ getTurningMotorPosition());
+        // System.out.println(turningChannel + " desired angle " + state.angle.getRadians());
     // Calculate the turning motor output from the turning PID controller.
+
+    turnOutput = Math.min(Math.max(-.7, turnOutput), .7);
+    
     m_driveMotor.set(TalonSRXControlMode.PercentOutput,driveOutput);
     m_turningMotor.set(TalonSRXControlMode.PercentOutput,turnOutput);
     SmartDashboard.putNumber(turningChannel + "Current turning output", turnOutput);
+    SmartDashboard.putNumber(turningChannel + " Current drive output", driveOutput);
   }
-
-  /** Zeroes all the SwerveModule encoders. */
-  public void resetEncoders() {
-    m_turningMotor.setSelectedSensorPosition(0);
-  }
-
-}
+  
+ }

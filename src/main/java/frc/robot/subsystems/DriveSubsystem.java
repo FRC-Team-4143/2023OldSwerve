@@ -13,6 +13,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -63,6 +64,12 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearLeft.getPosition(),
             m_rearRight.getPosition()
           });
+  public SwerveModule[] modules = {
+    m_frontLeft,
+    m_rearLeft,
+    m_frontRight,
+    m_rearRight
+  };
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {}
@@ -78,8 +85,16 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearLeft.getPosition(),
           m_rearRight.getPosition()
         });
-  }
 
+  }
+  public CommandBase setWheelOffsets(){
+    return runOnce(() ->{
+        for(SwerveModule module:modules){
+           module.setWheelOffsets();
+        }
+        System.out.println("Set wheel offsets have been activated");
+    }).ignoringDisable(true);
+  }
   /**
    * Returns the currently-estimated pose of the robot.
    *
@@ -115,6 +130,15 @@ public class DriveSubsystem extends SubsystemBase {
    * @param fieldRelative Whether the provided x and y speeds are relative to the field.
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+  if(Math.abs(rot) < 0.1){
+    rot = 0;
+  }
+  if(Math.abs(ySpeed) < 0.1){
+    ySpeed = 0;
+  }
+  if(Math.abs(xSpeed) < 0.1){
+    xSpeed = 0;
+  }
     var swerveModuleStates =
         DriveConstants.kDriveKinematics.toSwerveModuleStates(
             fieldRelative
@@ -142,13 +166,7 @@ public class DriveSubsystem extends SubsystemBase {
     m_rearRight.setDesiredState(desiredStates[3]);
   }
 
-  /** Resets the drive encoders to currently read a position of 0. */
-  public void resetEncoders() {
-    m_frontLeft.resetEncoders();
-    m_rearLeft.resetEncoders();
-    m_frontRight.resetEncoders();
-    m_rearRight.resetEncoders();
-  }
+
 
   /** Zeroes the heading of the robot. */
   public void zeroHeading() {

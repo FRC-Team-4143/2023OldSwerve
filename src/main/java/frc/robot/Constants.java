@@ -29,14 +29,14 @@ public final class Constants {
     public static final int kRearRightTurningMotorPort = 11;
 
     public static final boolean kFrontLeftTurningEncoderReversed = false;
-    public static final boolean kRearLeftTurningEncoderReversed = true;
+    public static final boolean kRearLeftTurningEncoderReversed = false;
     public static final boolean kFrontRightTurningEncoderReversed = false;
-    public static final boolean kRearRightTurningEncoderReversed = true;
-    
-    public static final double kFrontLeftTurnOffset = -2.611;
-    public static final double kRearLeftTurnOffset = 1.321;
-    public static final double kFrontRightTurnOffset = 2.06;
-    public static final double kRearRightTurnOffset = -1.92;
+    public static final boolean kRearRightTurningEncoderReversed = false;
+
+    public static final double kFrontLeftTurnOffset = -0.371;
+    public static final double kRearLeftTurnOffset = 1.020;
+    public static final double kFrontRightTurnOffset = -0.875;
+    public static final double kRearRightTurnOffset = 1.027;
 
     public static final boolean kFrontLeftDriveEncoderReversed = false;
     public static final boolean kRearLeftDriveEncoderReversed = true;
@@ -64,7 +64,7 @@ public final class Constants {
     public static final double kvVoltSecondsPerMeter = 0.8;
     public static final double kaVoltSecondsSquaredPerMeter = 0.15;
 
-    public static final double kMaxSpeedMetersPerSecond = 3;
+    public static final double kMaxSpeedMetersPerSecond = 1.50;
   }
 
   public static final class ModuleConstants {
@@ -73,7 +73,7 @@ public final class Constants {
 
     public static final int kEncoderCPR = 4096;
     public static final double kWheelDiameterMeters = 0.15;
-    public static final double kDriveEncoderDistancePerPulse =
+    public static final double kDriveEncoderDistancePerPulse = 
         // Assumes the encoders are directly mounted on the wheel shafts
         (kWheelDiameterMeters * Math.PI) / (double) kEncoderCPR;
 
@@ -81,7 +81,7 @@ public final class Constants {
         // Assumes the encoders are on a 1:1 reduction with the module shaft.
         (2 * Math.PI) / (double) kEncoderCPR;
 
-    public static final double kPModuleTurningController = .8;
+    public static final double kPModuleTurningController = .9;
 
     public static final double kPModuleDriveController = 1;
   }
@@ -91,7 +91,7 @@ public final class Constants {
   }
 
   public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = 3;
+    public static final double kMaxSpeedMetersPerSecond = 10;
     public static final double kMaxAccelerationMetersPerSecondSquared = 3;
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
